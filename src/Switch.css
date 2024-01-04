@@ -1,0 +1,38 @@
+/* Switch.css */
+
+.switch {
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.slider {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+}
+
+.switch.on {
+    background-color: #66bb6a;
+}
+
+.switch.off {
+    background-color: #ff0000;
+}
+
+.slider.on {
+    transform: translateX(30px);
+}
+
+.slider.off {
+    transform: translateX(0);
+}

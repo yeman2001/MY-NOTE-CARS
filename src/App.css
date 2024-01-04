@@ -1,38 +1,164 @@
-.App {
-  text-align: center;
+* {
+    font-family: 'Noto Sans Lao', sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1 {
+    font-size: 36px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.top-title {
+    text-align: center;
+    padding: 10px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+p {
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-.App-link {
-  color: #61dafb;
+.navbar {
+    padding: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.navbar-toggler {
+    border: none;
+
 }
+
+
+
+
+
+footer {
+
+    background-color: white;
+    color: black;
+    padding: 10px 0;
+    /* margin: 10px 0; */
+    text-align: center;
+
+
+
+}
+
+@media only screen and (max-width: 600px) {
+    .container-body {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .card-report {
+        width: 100%;
+        margin: 5px 0;
+        padding: 10px;
+    }
+
+    .col-4 {
+        flex: 0 0 auto;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+
+}
+
+
+
+.card-report {
+    /* width: 270px; */
+    /* height: 250px; */
+    /* margin: 20px; */
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.container-cars {
+
+    margin-bottom: 2rem;
+    display: flex;
+    /* flex-wrap: wrap; */
+    justify-content: center;
+
+}
+
+.Modal {
+    margin: 0.5rem;
+
+}
+
+.big-con {
+
+    background-color: cadetblue;
+    border-radius: 20px;
+    padding: 10px;
+    height: 100vh;
+
+}
+
+
+/* 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    margin: 15% auto;
+    width: 80%;
+    max-width: px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.modal:target {
+    display: block;
+}
+
+@media only screen and (max-width: 600px) {
+    .modal-content {
+        margin: 10% auto;
+    }
+} */
+/***************con-checkout*************/
+.con-checkout {
+    padding: 10px;
+}
+
+/***************con-checkout*************/
+/**************con-balance**************/
+.con-balance {
+    padding: 10px;
+}
+
+/**************con-balance**************/
+/*************con-login*****************/
+.con-login {
+    padding: 10px;
+
+}
+
+.con-from-login {
+
+    width: 100%;
+}
+
+.form-login {
+    padding: 20px;
+    background-color: cadetblue;
+    border-radius: 10px;
+    width: 50%;
+}
+
+/*************con-login*****************/
