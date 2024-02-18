@@ -16,8 +16,6 @@ function Body() {
 
     const [datacars, setDataCars] = useState([]);
 
-    const user = localStorage.getItem('user')
-
 
     useEffect(() => {
         _fetchData()

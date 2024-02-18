@@ -35,7 +35,7 @@ function Bicycle({ fetchData }) {
         }
         else {
             const response = await axios.post(`https://soukphasone.onrender.com/order`, { carType, amount, note, money, sign });
-            console.log(response.data);
+            // console.log(response.data);
 
             // alert('Form submitted successfully!');
             Swal.fire({

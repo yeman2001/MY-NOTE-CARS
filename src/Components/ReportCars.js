@@ -8,15 +8,16 @@ import { Button } from 'react-bootstrap'
 
 
 function ReportCars() {//props
+    const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
     const [datacars, setDataCars] = useState([]);
 
     async function fetchData() {
         try {
             const response = await axios.get(
-                `https://soukphasone.onrender.com/report/?status=ONLINE`
+                `http://127.0.0.1:8000/report/?status=ONLINE&userId=${userId}`
             );
             setDataCars(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error(error);
         }

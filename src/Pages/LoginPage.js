@@ -55,7 +55,7 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 
             })
             // localStorage.setItem('user', JSON.stringify(response.data));
-            // localStorage.setItem('user_id', JSON.stringify(response.data.data._id))
+            localStorage.setItem('user_id', JSON.stringify(response.data.data._id))
             localStorage.setItem('token', JSON.stringify(response.data.accessToken))
             setIsLoggedIn(true)
             // Navigate('/')

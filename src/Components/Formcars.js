@@ -15,49 +15,58 @@ function Cars({ fetchData }) {
     const [amount, setAmount] = useState("10000");
     const [note, setNote] = useState("");
     const [money, setMoney] = useState('');
-    const [userId, setUserId] = useState('');
-    const user_Id = localStorage.getItem('user_id');
-
     const navigate = useNavigate();
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
-    const token = localStorage.getItem('token')
-    axios.defaults.headers.common['Authorization'] = `STORE ${token}`;
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        if (sign.trim() === '') {
-            // alert('Please enter your name.');
+    
+        if (sign.trim() === '' || money.trim() === '') {
             Swal.fire({
                 title: 'Error!',
-                text: 'Do you want to continue',
+                text: 'Data field cannot be empty',
                 icon: 'error',
                 showConfirmButton: false,
-                timer: 500
-            })
+                timer: 1500
+            });
             return;
         }
-        else {
-            const response = await axios.post(`https://soukphasone.onrender.com/order`, { sign, carType, amount, note, money, });
-            console.log(response.data);
+        const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
+        console.log("UserId", userId);
+        const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
+        console.log("Token", token);
+        const headers = {
+            'Authorization': `STORE ${token}`
+        };
+    
+        try {
+            const response = await axios.post(`https://soukphasone.onrender.com/order`, { userId, sign, carType, amount, note, money }, { headers });
             navigate("/");
-
-            // alert('Form submitted successfully!');
             Swal.fire({
                 title: 'Success!',
-                text: 'Do you want to continue',
+                text: 'Form submitted successfully.',
                 icon: 'success',
                 showConfirmButton: false,
                 timer: 1500
             });
-            handleClose()
+            handleClose();
             fetchData();
             setSign('');
             setNote('');
             setMoney('');
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred while submitting the form.',
+                icon: 'error',
+                showConfirmButton: true
+            });
         }
     }
-
+    
+    
+    
     return (
         <>
             <Button variant="primary" onClick={handleShow} className='Modal' size='md' style={{ backgroundColor: "#0B666A", color: "white", border: "none" }}>
@@ -66,7 +75,7 @@ function Cars({ fetchData }) {
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>ໃສຂໍ້ມູນລົດໃຫຍ່</Modal.Title>
+                    <Modal.Title>ໃສ່ຂໍ້ມູນລົດໃຫຍ່</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmit}>
                     <Modal.Body>

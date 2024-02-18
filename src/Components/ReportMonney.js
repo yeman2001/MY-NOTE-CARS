@@ -20,7 +20,7 @@ function ReportMoney({ children }) {
                 `https://soukphasone.onrender.com/orders`
             );
             setData(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -29,29 +29,34 @@ function ReportMoney({ children }) {
         fetchData();
     },);
 
-    const filterDataByDate = () => {
-        const currentDate = new Date().toISOString().split("T")[0];
-        return data.filter((item) => item.createdAt.startsWith(currentDate));
-    };
+    // const filterDataByDate = () => {
+    //     const currentDate = new Date().toISOString().split("T")[0];
+    //     return data.filter((item) => item.createdAt.startsWith(currentDate));
+    // };
 
-    const filteredData = filterDataByDate();
+    // const filteredData = filterDataByDate();
+    const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
+    const CashtotalToday = () => {   
+    const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in the format 'YYYY-MM-DD'
+    return data
+        .filter(
+            (item) =>
+                item.createdAt.startsWith(currentDate) &&
+                item.money === "cash" &&
+                item.userId === userId
+        )
+        .reduce((total, item) => (total += item.amount), 0);
+};
 
-    const CashtotalToday = () => {
-        const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in the format 'YYYY-MM-DD'
-        return data
-            .filter(
-                (item) =>
-                    item.createdAt.startsWith(currentDate) && item.money === "cash"
-            )
-            .reduce((total, item) => (total += item.amount), 0);
-    };
     const TranfertotalToday = () => {
         const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in the format 'YYYY-MM-DD'
         return data
-            .filter(
-                (item) =>
-                    item.createdAt.startsWith(currentDate) && item.money === "transfer"
-            )
+        .filter(
+            (item) =>
+                item.createdAt.startsWith(currentDate) &&
+                item.money === "transfer" &&
+                item.userId === userId
+        )
             .reduce((total, item) => (total += item.amount), 0);
     };
     return (

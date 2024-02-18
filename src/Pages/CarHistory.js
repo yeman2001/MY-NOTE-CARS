@@ -9,6 +9,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Navbarr from '../Components/Navbar';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
+import { da } from 'date-fns/locale';
 
 function CarHistory() {
     const [data, setData] = useState([])
@@ -53,17 +54,20 @@ function CarHistory() {
     useEffect(() => {
         fetchData()
     }, [sign, dateFrom, dateTo])
-
-    const countCar = () => {
-        return data.filter((item) => item.carType === "ລົດໃຫຍ່").length;
+    const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
+    const countCar= () => {
+        return data.filter((item) => item.userId === userId && item.carType === "ລົດໃຫຍ່").length;
     };
+    
     const countBike = () => {
-        return data.filter((item) => item.carType === "ລົດຈັກ").length;
+        return data.filter((item) => item.userId === userId && item.carType === "ລົດຈັກ").length;
     };
+    
     const countCycle = () => {
-        return data.filter((item) => item.carType === "ລົດຖີບ").length;
+        return data.filter((item) => item.userId === userId && item.carType === "ລົດຖີບ").length;
     };
-
+    
+console.log("data", data)
     return (
         <>
             <Navbarr />
@@ -151,7 +155,9 @@ function CarHistory() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((row, i) => (
+                                {data
+                                .filter(row => row.userId === userId)
+                                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((row, i) => (
                                     <tr key={i._id}>
                                         <td>{i + 1}</td>
                                         <td>{row?.sign || "---"}</td>
