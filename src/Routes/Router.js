@@ -5,7 +5,7 @@ import Body from '../Pages/Body'
 import Checkout from '../Pages/Checkout'
 import CarHistory from '../Pages/CarHistory'
 import BalanceHistoryForm from '../Pages/BanlanceHistory'
-
+import Contect from '../Pages/Contect'
 
 
 
@@ -20,18 +20,13 @@ function Router() {
         <div>
             {/* <Navbarr /> */}
             <BrowserRouter>
-
                 <Routes>
                     <Route path="/login" element={<LoginPage onLogin={handleLogin} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
                     <Route path="/" element={isLoggedIn ? <Body /> : <Navigate to="/login" />} />
                     <Route path="/Checkout" element={isLoggedIn ? <Checkout /> : <Navigate to="/" />} />
                     <Route path="/Carhistory" element={isLoggedIn ? <CarHistory /> : <Navigate to="/" />} />
                     <Route path="/moneyhistory" element={isLoggedIn ? <BalanceHistoryForm /> : <Navigate to="/" />} />
-                    {/* <Route path="/home" element={<Body />} />
-                    <Route path='/Checkout' element={<Checkout />} />
-                    <Route path='/Carhistory' element={<CarHistory />} />
-                    <Route path='/moneyhistory' element={<BalanceHistoryForm />} /> */}
-
+                    {/* <Route path="/Contect" element={isLoggedIn ? <Contect /> : <Navigate to="/" />} /> */}
                 </Routes>
             </BrowserRouter>
         </div>

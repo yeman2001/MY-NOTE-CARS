@@ -5,7 +5,6 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCar } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
-
 import { useNavigate } from "react-router-dom";
 
 function Cars({ fetchData }) {
@@ -17,7 +16,6 @@ function Cars({ fetchData }) {
     const [money, setMoney] = useState('');
     const [userId, setUserId] = useState('');
     const user_Id = localStorage.getItem('user_id');
-
     const navigate = useNavigate();
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);

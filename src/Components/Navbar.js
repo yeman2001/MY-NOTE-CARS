@@ -29,21 +29,12 @@ function Navbarr() {
                             {!isLoggedIn && (<Nav.Link as={Link} to="/Checkout">ລົດໃນຄອກຂະນະນີ້</Nav.Link>)}
                             {!isLoggedIn && (<Nav.Link as={Link} to="/Carhistory">ປະຫວັດລົດເຂົ້າ-ອອກ</Nav.Link>)}
                             {!isLoggedIn && (<Nav.Link as={Link} to="/moneyhistory">ປະຫວັດຍອດເງິນ</Nav.Link>)}
+                            {/* {!isLoggedIn && (<Nav.Link as={Link} to="/Contect">ຕິດຕໍ່</Nav.Link>)} */}
                         </Nav>
                         <Navbar.Collapse className="justify-content-end">
                             <Nav>
-                                <Nav.Link as={Link} to="/login" style={{ color: "red" }}>ອອກຈາກລະບົບ</Nav.Link>
-                                <Nav.Link as={Link} to="/login"><FontAwesomeIcon icon={faArrowRightFromBracket} style={{ color: "red" }} /></Nav.Link>
-                                {/* <NavDropdown
-                                    id="nav-dropdown-dark-example"
-                                    title="Action"
-                                    menuVariant="dark"
-                                >
-                                    <NavDropdown.Item as={Link} to="/login">
-                                        ອອກຈາກລະບົບ
-                                    </NavDropdown.Item>
 
-                                </NavDropdown> */}
+                                <Nav.Link as={Link} to="/login" style={{ color: "red" }}>ອອກຈາກລະບົບ<FontAwesomeIcon icon={faArrowRightFromBracket} style={{ color: "red", marginLeft: "5px" }} /></Nav.Link>
                             </Nav>
                         </Navbar.Collapse>
                     </Navbar.Collapse>
