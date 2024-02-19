@@ -3,7 +3,7 @@ import '../App'
 
 import { Link } from 'react-router-dom';
 import axios from 'axios'
-import { Button } from 'react-bootstrap'
+import { Button, Col } from 'react-bootstrap'
 
 
 
@@ -31,9 +31,9 @@ function ReportCars() {//props
                 <h3>ລົດໃນຄອກຂະນະນີ້:</h3>
                 <hr></hr>
                 <div>
-                    <div style={{ display: "flex" }} className='report-title'><span>ລົດຈັກ :</span><p>{datacars.totalBike}</p></div>
-                    <div style={{ display: "flex" }} className='report-title'><span>ລົດຖີບ :</span><p>{datacars.totalCycle}</p></div>
-                    <div style={{ display: "flex" }} className='report-title'><span>ລົດໃຫຍ່ :</span><p>{datacars.totalCars}</p></div>
+                    <div style={{ display: "flex" }} className='report-title'><span>ລົດຈັກ :</span><p>{datacars.totalBike}</p><p style={{ marginLeft: '5px' }}> ຄັນ</p></div>
+                    <div style={{ display: "flex" }} className='report-title'><span>ລົດຖີບ :</span><p>{datacars.totalCycle}</p><p style={{ marginLeft: '5px' }}> ຄັນ</p></div>
+                    <div style={{ display: "flex" }} className='report-title'><span>ລົດໃຫຍ່ :</span><p>{datacars.totalCars}</p><p style={{ marginLeft: '5px' }}> ຄັນ</p></div>
                 </div>
                 <Link as={Link} to="/Checkout">
                     <Button style={{ marginTop: "0rem", color: "white", width: "100%", background: "#0B666A", border: "none", }} className='btn hover '> ເບິ່ງລາຍລະອຽດ</Button>
