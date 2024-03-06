@@ -60,9 +60,9 @@ function ReportMoney({ children }) {
             <h3>ລວມຍອດມື້ນີ້ :</h3>
             <hr></hr>
 
-            <div style={{ display: "flex" }}><p>ລວມຍອດ :</p><span>{TranfertotalToday() + CashtotalToday()}</span></div>
-            <div style={{ display: "flex" }}><p>ເງິນໂອນ :</p><span>{TranfertotalToday()}</span></div>
-            <div style={{ display: "flex" }}><p>ເງີນສົດ :</p><span> {CashtotalToday()}</span></div>
+            <div style={{ display: "flex" }}><p>ລວມຍອດ :</p><span>{TranfertotalToday() + CashtotalToday()}</span> <p style={{ marginLeft: '5px' }}> ກີບ</p></div>
+            <div style={{ display: "flex" }}><p>ເງິນໂອນ :</p><span>{TranfertotalToday()}</span><p style={{ marginLeft: '5px' }}> ກີບ</p></div>
+            <div style={{ display: "flex" }}><p>ເງີນສົດ :</p><span> {CashtotalToday()}</span><p style={{ marginLeft: '5px' }}> ກີບ</p></div>
             <Link as={Link} to="/moneyhistory">
                 <Button style={{ marginTop: "0rem", color: "white", width: "100%", background: "#0B666A", border: "none" }} className='btn '> ເບິ່ງລາຍລະອຽດ</Button>
             </Link>
