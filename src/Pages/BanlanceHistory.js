@@ -6,19 +6,26 @@ import Navbarr from "../Components/Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
-
 const BalanceHistoryForm = (props) => {
     const [data, setData] = useState([]);
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
+    const [userId, setUserId] = useState("");
+
     useEffect(() => {
+        // Fetch userId from local storage
+        const storedUserId = localStorage.getItem('user_id');
+        if (storedUserId) {
+            setUserId(storedUserId.replace(/^"(.*)"$/, '$1'));
+        }
+
         fetchData();
     }, []);
 
     async function fetchData() {
         try {
             const response = await axios.get(
-                `https://soukphasone.onrender.com/orders?dateFrom=${dateFrom}&dateTo=${dateTo}`
+                `https://soukphasone.onrender.com/orders?dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`
             );
             setData(response.data);
             console.log(response.data);
@@ -26,14 +33,17 @@ const BalanceHistoryForm = (props) => {
             console.error(error);
         }
     }
+
     useEffect(() => {
         fetchData();
-    }, [dateFrom, dateTo]);
+    }, [dateFrom, dateTo, userId]);
+
     const Cashtotal = () => {
         return data
             .filter((item) => item.money === "cash")
             .reduce((total, item) => (total += item.amount), 0);
     };
+
     const Tranfertotal = () => {
         return data
             .filter((item) => item.money === "transfer")

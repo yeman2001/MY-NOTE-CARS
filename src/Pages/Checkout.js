@@ -48,8 +48,15 @@ const Checkout = () => {
         _fetchData()
     }, [sign])
 
+
+    const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
+    console.log("Token", token);
+    const headers = {
+        'Authorization': `STORE ${token}`
+    };
+
     const handleUpdateStatus = async (id) => {
-        await axios.put(`https://soukphasone.onrender.com/order/${id}`, { status: "OFFLINE" })
+        await axios.put(`https://soukphasone.onrender.com/order/${id}`, { status: "OFFLINE" }, { headers })
             .then(response => {
                 _fetchData()
                 _getCars()
