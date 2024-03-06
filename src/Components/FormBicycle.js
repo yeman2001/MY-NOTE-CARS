@@ -1,91 +1,71 @@
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBicycle } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBicycle, faCar } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
 
+import { useNavigate } from "react-router-dom";
 
 function Bicycle({ fetchData }) {
     const [showModal, setShowModal] = useState(false);
-
+    const [sign, setSign] = useState("")
     const [carType, setCarType] = useState("ລົດຖີບ");
     const [amount, setAmount] = useState("3000");
     const [note, setNote] = useState("");
-    const [sign, setSign] = useState("");
     const [money, setMoney] = useState('');
-
+    const navigate = useNavigate();
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
-
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (sign.trim() === '') {
-            // alert('Please enter your name.');
+
+        if (sign.trim() === '' || money.trim() === '') {
             Swal.fire({
                 title: 'Error!',
-                text: 'Do you want to continue',
+                text: 'Data field cannot be empty',
                 icon: 'error',
                 showConfirmButton: false,
-                timer: 500
-            })
+                timer: 1500
+            });
             return;
         }
-        else {
-            const response = await axios.post(`https://soukphasone.onrender.com/order`, { carType, amount, note, money, sign });
-            console.log(response.data);
+        const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
+        console.log("UserId", userId);
+        const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
+        console.log("Token", token);
+        const headers = {
+            'Authorization': `STORE ${token}`
+        };
 
-            // alert('Form submitted successfully!');
+        try {
+            const response = await axios.post(`https://soukphasone.onrender.com/order`, { userId, sign, carType, amount, note, money }, { headers });
+            navigate("/");
             Swal.fire({
                 title: 'Success!',
-                text: 'Do you want to continue',
+                text: 'Form submitted successfully.',
                 icon: 'success',
                 showConfirmButton: false,
                 timer: 1500
-            })
-            fetchData()
+            });
+            handleClose();
+            fetchData();
+            setSign('');
             setNote('');
             setMoney('');
-            setSign('')
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred while submitting the form.',
+                icon: 'error',
+                showConfirmButton: true
+            });
         }
     }
 
 
-
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     if (sign.trim() === '') {
-    //         // alert('Please enter your name.');
-    //         Swal.fire({
-    //             title: 'Error!',
-    //             text: 'Do you want to continue',
-    //             icon: 'error',
-    //             showConfirmButton: false,
-    //             timer: 500
-    //         })
-    //         return;
-    //     }
-    //     else {
-    //         const id = "your-id"; // replace with the actual id
-    //         const response = await axios.post(`https://soukphasone.onrender.com/order/${id}`, { carType, amount, note, money, sign });
-    //         console.log(response.data);
-
-    //         // alert('Form submitted successfully!');
-    //         Swal.fire({
-    //             title: 'Success!',
-    //             text: 'Do you want to continue',
-    //             icon: 'success',
-    //             showConfirmButton: false,
-    //             timer: 1500
-    //         })
-    //         fetchData()
-    //         setNote('');
-    //         setMoney('');
-    //         setSign('')
-    //     }
-    // }
 
     return (
         <>
@@ -93,9 +73,9 @@ function Bicycle({ fetchData }) {
                 <FontAwesomeIcon icon={faBicycle} /> ລົດຖີບ
             </Button>
 
-            <Modal show={showModal} onHide={handleClose}  >
-                <Modal.Header closeButton >
-                    <Modal.Title >ໃສຂໍ້ມູນລົດຖີບ</Modal.Title>
+            <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>ໃສ່ຂໍ້ມູນລົດຖີບ</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmit}>
                     <Modal.Body>
@@ -112,7 +92,6 @@ function Bicycle({ fetchData }) {
                                 <option >ລົດຖີບ</option>
                             </Form.Control>
                         </Form.Group>
-
                         <Form.Group >
                             <Form.Control as="select" value={amount} onChange={(e) => setAmount(e.target.value)} required disabled className="mb-2" >
                                 <option >3000</option>
@@ -148,6 +127,3 @@ function Bicycle({ fetchData }) {
 }
 
 export default Bicycle;
-
-
-

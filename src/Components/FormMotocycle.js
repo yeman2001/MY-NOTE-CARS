@@ -1,11 +1,12 @@
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { faMotorcycle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCar, faMotorcycle } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
 
+import { useNavigate } from "react-router-dom";
 
 function Motocycle({ fetchData }) {
     const [showModal, setShowModal] = useState(false);
@@ -14,66 +15,67 @@ function Motocycle({ fetchData }) {
     const [amount, setAmount] = useState("5000");
     const [note, setNote] = useState("");
     const [money, setMoney] = useState('');
-
+    const navigate = useNavigate();
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
-
-
-
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (sign.trim() === '') {
-            // alert('Please enter your name.');
+
+        if (sign.trim() === '' || money.trim() === '') {
             Swal.fire({
                 title: 'Error!',
-                text: 'Do you want to continue',
+                text: 'Data field cannot be empty',
                 icon: 'error',
                 showConfirmButton: false,
-                timer: 500
-            })
+                timer: 1500
+            });
             return;
         }
-        else {
-            const response = await axios.post(`https://soukphasone.onrender.com/order`, { sign, carType, amount, note, money });
-            console.log(response.data);
+        const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
+        console.log("UserId", userId);
+        const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
+        console.log("Token", token);
+        const headers = {
+            'Authorization': `STORE ${token}`
+        };
 
-            // alert('Form submitted successfully!');
+        try {
+            const response = await axios.post(`https://soukphasone.onrender.com/order`, { userId, sign, carType, amount, note, money }, { headers });
+            navigate("/");
             Swal.fire({
                 title: 'Success!',
-                text: 'Do you want to continue',
+                text: 'Form submitted successfully.',
                 icon: 'success',
                 showConfirmButton: false,
                 timer: 1500
-            })
-            fetchData()
+            });
+            handleClose();
+            fetchData();
             setSign('');
             setNote('');
             setMoney('');
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred while submitting the form.',
+                icon: 'error',
+                showConfirmButton: true
+            });
         }
     }
-    // if (sign !== '') {
-    //     // submit form
-    //     setSign('');
-    //     setNote('');
 
-    //     // close modal
-
-    // } else {
-    //     alert('ກະລຸນາ! ໃສ່ທະບຽນລົດ ຫຼື ເລກກົງເຕີ');
-    // }
-    // handleClose();
-    // Logic to submit form data to backend
 
 
     return (
         <>
             <Button variant="primary" onClick={handleShow} className='Modal' size='md' style={{ backgroundColor: "#0B666A", color: "white", border: "none" }}>
-                <FontAwesomeIcon icon={faMotorcycle} />  ລົດຈັກ
+                <FontAwesomeIcon icon={faMotorcycle} /> ລົດຈັກ
             </Button>
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>ໃສຂໍ້ມູນລົກຈັກ</Modal.Title>
+                    <Modal.Title>ໃສ່ຂໍ້ມູນລົດຈັກ</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmit}>
                     <Modal.Body>
@@ -125,5 +127,3 @@ function Motocycle({ fetchData }) {
 }
 
 export default Motocycle;
-
-

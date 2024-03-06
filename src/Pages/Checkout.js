@@ -11,7 +11,7 @@ import Navbarr from '../Components/Navbar';
 import { motion } from "framer-motion";
 
 const Checkout = () => {
-
+    const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
     const [tableData, setTableData] = useState([]);
     const [datacars, setDataCars] = useState([]);
     const [sign, setSign] = useState('')
@@ -66,7 +66,8 @@ const Checkout = () => {
     }, []);
 
     const _getCars = async () => {
-        await axios.get(`https://soukphasone.onrender.com/report/?status=ONLINE`)
+
+        await axios.get(`https://soukphasone.onrender.com/report/?status=ONLINE&userId=${userId}`)
             .then(response => {
                 const data = response.data;
                 setDataCars(data);
@@ -76,8 +77,8 @@ const Checkout = () => {
             });
     }
 
-
     const h1 = { color: "white", marginTop: '15px' }
+
     return (
         <>
             <Navbarr />
@@ -177,39 +178,42 @@ const Checkout = () => {
                             <tbody>
                                 {/* tableData */}
                                 {/* {tableData.map((item, index) => ( */}
-                                {tableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item, index) => (
-                                    <tr key={item._id}>
-                                        <td>{index + 1}</td>
-                                        <td>{item.sign}</td>
-                                        <td>{item.carType}</td>
-                                        <td>{item.amount}</td>
-                                        <td>{item.money}</td>
-                                        <td >{item.note}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <button onClick={(e) => {
-                                                Swal.fire({
-                                                    title: 'Are you sure?',
-                                                    text: "You won't be able to revert this!",
-                                                    icon: 'warning',
-                                                    showCancelButton: true,
-                                                    confirmButtonColor: '#3085d6',
-                                                    cancelButtonColor: '#d33',
-                                                    confirmButtonText: `Yes, delete it!`
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        handleUpdateStatus(item._id)
-                                                        Swal.fire(
-                                                            'Deleted!',
-                                                            'Your file has been deleted.',
-                                                            'success',
-                                                        )
-                                                    }
-                                                })
-                                                // handleUpdateStatus(item._id)
-                                            }} style={{ backgroundColor: "#0B666A", color: "white", border: "none", borderRadius: "5px" }}>{item.status}</button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {tableData
+                                    .filter(item => item.userId === userId)
+                                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                                    .map((item, index) => (
+                                        <tr key={item._id}>
+                                            <td>{index + 1}</td>
+                                            <td>{item.sign}</td>
+                                            <td>{item.carType}</td>
+                                            <td>{item.amount}</td>
+                                            <td>{item.money}</td>
+                                            <td>{item.note}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <button onClick={(e) => {
+                                                    Swal.fire({
+                                                        title: 'Are you sure?',
+                                                        text: "You won't be able to revert this!",
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#3085d6',
+                                                        cancelButtonColor: '#d33',
+                                                        confirmButtonText: `Yes, delete it!`
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            handleUpdateStatus(item._id)
+                                                            Swal.fire(
+                                                                'Deleted!',
+                                                                'Your file has been deleted.',
+                                                                'success',
+                                                            )
+                                                        }
+                                                    })
+                                                }} style={{ backgroundColor: "#0B666A", color: "white", border: "none", borderRadius: "5px" }}>{item.status}</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+
                             </tbody>
                         </Table>
                         <br></br>
