@@ -18,7 +18,7 @@ function CarHistory() {
     const [dateTo, setDateTo] = useState('')
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
-
+    const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
 
 
 
@@ -41,18 +41,19 @@ function CarHistory() {
 
     }, [])
 
+    useEffect(() => {
+        fetchData();
+    }, [sign, dateFrom, dateTo]);
+
     async function fetchData() {
         try {
-            const response = await axios.get(`https://soukphasone.onrender.com/orders?sign=${sign}&note=${note}&dateFrom=${dateFrom}&dateTo=${dateTo}&status=OFFLINE`)
-            setData(response.data)
-            console.log(response.data)
+            const response = await axios.get(`https://soukphasone.onrender.com/orders?sign=${sign}&note=${note}&dateFrom=${dateFrom}&dateTo=${dateTo}&status=OFFLINE&userId=${userId}`);
+            setData(response.data);
+            console.log(response.data);
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
     }
-    useEffect(() => {
-        fetchData()
-    }, [sign, dateFrom, dateTo])
 
     const countCar = () => {
         return data.filter((item) => item.carType === "ລົດໃຫຍ່").length;
