@@ -1,45 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar } from '@fortawesome/free-solid-svg-icons';
-import { motion } from "framer-motion";
-import { Row, Col } from 'react-bootstrap';
+import { faCar, faUser, faLock, faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'; // Import necessary icons
+import { motion } from 'framer-motion';
+import { Row, Col, Spinner } from 'react-bootstrap';
+import { loginUser } from '../Services/api';
 import SingUp from '../Components/SingUp';
 import ForgetPassWord from '../Components/ForgetPassword';
+import Loading from '../helper/Loading';
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
-    const Navigate = useNavigate()
+    const Navigate = useNavigate();
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false); // Add loading state
+    const [showPassword, setShowPassword] = useState(false); // Add state to track if password is visible
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetchData()
+        setLoading(true); // Set loading to true when submitting
+        loginUser(name, password, setIsLoggedIn, setError, Navigate)
+            .finally(() => setLoading(false)); // Set loading to false after login attempt
     };
-    async function fetchData() {
-        try {
-            const response = await axios.post(`https://soukphasone.onrender.com/login`, {
-                "username": name,
-                "password": password
-            })
-            // localStorage.setItem('user', JSON.stringify(response.data));
-            localStorage.setItem('user_id', JSON.stringify(response.data.data._id))
-            localStorage.setItem('token', JSON.stringify(response.data.accessToken))
-            setIsLoggedIn(true)
-            // Navigate('/')
-            Navigate('/');
-        } catch (error) {
-            console.error(error)
-            setError('Incorrect username or password')
-            setTimeout(() => {
-                setError('')
-                setName('')
-                setPassword('')
-            }, 3000)
-        }
-    }
+
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     useEffect(() => {
         if (localStorage.getItem('token')) {
             setIsLoggedIn(true);
@@ -48,9 +38,6 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
     return (
         <section className="vh-100 " style={{ backgroundColor: " cadetblue", }} >
             <motion.div className="container py-5 h-100 "
-                // initial={{ x: "-100vw" }}
-                // animate={{ x: 0 }}
-                // transition={{ duration: 1, ease: "easeOut" }}
                 initial={{ x: "-100vw", y: 0 }}
                 animate={{ x: 0, y: 0 }}
                 transition={{ duration: 2, ease: "easeOut", type: "spring", bounce: 0.3 }}>
@@ -65,33 +52,42 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
                                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                                     <div className="card-body p-4 p-lg-5 text-black">
                                         <form onSubmit={handleSubmit}>
-                                            <div className="d-flex align-items-center mb-3 pb-1">
-                                                <FontAwesomeIcon icon={faCar} style={{ color: "#0B666A" }} className='fas fa-cubes fa-3x me-3' />
-                                                <span className="h1 fw-bold mb-0" style={{ color: "#000000A6", fontFamily: "monospace" }}>MY NOTE CARS</span>
-                                            </div>
-                                            <br></br>
-                                            <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: "1px" }}>ເຂົ້າສູ່ລະບົບ</h3>
-                                            <div className="form-outline mb-4">
-                                                <input type="text" id="name" className="form-control form-control-md" placeholder='ໃສ່ຊື່ບັນຊີ' value={name}
-                                                    onChange={(e) => setName(e.target.value)} />
+                                            <div >
+                                                <div className="d-flex align-items-center mb-3 pb-1">
+                                                    <FontAwesomeIcon icon={faCar} style={{ color: "#0B666A" }} className='fas fa-cubes fa-3x me-3' />
+                                                    <span className="h1 fw-bold mb-0" style={{ color: "#000000A6", fontFamily: "monospace" }}>MY NOTE CARS</span>
+                                                </div>
+                                                <br></br>
+                                                <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: "1px" }}>ເຂົ້າສູ່ລະບົບ</h3>
                                             </div>
                                             <div className="form-outline mb-4">
-                                                <input type="password" id="password" className="form-control form-control-md" placeholder='ໃສ່ລະຫັດຜ່ານ' value={password}
-                                                    onChange={(e) => setPassword(e.target.value)} />
+                                                <div className="input-group">
+                                                    <span className="input-group-text" style={{ backgroundColor: "transparent", }}>
+                                                        <FontAwesomeIcon icon={faUser} style={{ color: "#0B666A" }} />
+                                                    </span>
+                                                    <input type="text" id="name" className="form-control form-control-md" placeholder='ໃສ່ຊື່ບັນຊີ' value={name}
+                                                        onChange={(e) => setName(e.target.value)} />
+                                                </div>
+                                            </div>
+                                            <div className="form-outline mb-4">
+                                                <div className="input-group">
+                                                    <span className="input-group-text" style={{ backgroundColor: "transparent", }}>
+                                                        <FontAwesomeIcon icon={faLock} style={{ color: "#0B666A" }} />
+                                                    </span>
+                                                    <input type={showPassword ? "text" : "password"} id="password" className="form-control form-control-md" placeholder='ໃສ່ລະຫັດຜ່ານ' value={password}
+                                                        onChange={(e) => setPassword(e.target.value)} />
+                                                    <span className="input-group-text" style={{ cursor: 'pointer' }} onClick={togglePasswordVisibility}>
+                                                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} style={{ color: "#0B666A" }} />
+                                                    </span>
+                                                </div>
                                             </div>
                                             {error && <div style={{ color: 'red' }}>{error}</div>}
-                                            <div className="pt-1 mb-4">
-                                                <button className="btn btn-md btn-block" type="submit" style={{ backgroundColor: "#0B666A", color: 'white', width: "100%", boxShadow: " 5px 5px 5px #888888" }}>ຕົກລົງ</button>
+                                            <div className="pt-1 mb-4" style={{ display: "flex", textAlign: "center", justifyContent: "end", }}>
+                                                <button className="btn btn-md btn-block" type="submit" style={{ backgroundColor: "#0B666A", color: 'white', width: "100%", boxShadow: " 5px 5px 5px #888888", display: "flex", justifyContent: "center" }}>
+                                                    {loading ? <Loading /> : 'ຕົກລົງ'}
+                                                </button>
                                             </div>
                                         </form>
-                                        <Row>
-                                            <Col >
-                                                <ForgetPassWord />
-                                            </Col>
-                                            <Col>
-                                                <SingUp />
-                                            </Col>
-                                        </Row>
                                     </div>
                                 </div>
                             </div>

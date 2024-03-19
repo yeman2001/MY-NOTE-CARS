@@ -9,6 +9,8 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Navbarr from '../Components/Navbar';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
+import { fetchCarHistory } from '../Services/api';
+import PaginationComponent from '../helper/PaginationComponent';
 
 function CarHistory() {
     const [data, setData] = useState([])
@@ -37,23 +39,22 @@ function CarHistory() {
     }
 
     useEffect(() => {
-        fetchData()
-
-    }, [])
+        fetchData();
+    }, []);
 
     useEffect(() => {
         fetchData();
-    }, [sign, dateFrom, dateTo]);
+    }, [sign, dateFrom, dateTo, note]);
 
-    async function fetchData() {
+    const fetchData = async () => {
         try {
-            const response = await axios.get(`https://soukphasone.onrender.com/orders?sign=${sign}&note=${note}&dateFrom=${dateFrom}&dateTo=${dateTo}&status=OFFLINE&userId=${userId}`);
-            setData(response.data);
-            console.log(response.data);
+            const fetchedData = await fetchCarHistory({ sign, note, dateFrom, dateTo });
+            setData(fetchedData);
+
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     const countCar = () => {
         return data.filter((item) => item.carType === "ລົດໃຫຍ່").length;
@@ -97,6 +98,20 @@ function CarHistory() {
                                     </InputGroup> {/* <Button variant="primary" type="submit" onClick={''} style={{ borderTopLeftRadius: "0px", borderBottomLeftRadius: "0px" }} >ຄົ້ນຫາ</Button> */}
                                 </Form.Group>
                             </Col>
+                            {/* <Col xs={12} md={3}>
+                                <Form.Group>
+                                    <InputGroup>
+                                        <InputGroup.Text id="basic-addon2" style={{ backgroundColor: "white" }}>
+                                            <FontAwesomeIcon icon={faMagnifyingGlass} className='' />
+                                        </InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            onChange={(e) => setNote(e.target.value)}
+                                            placeholder='ຄົ້ນຫາຫມາຍເຫດ'
+                                        />
+                                    </InputGroup>
+                                </Form.Group>
+                            </Col> */}
                         </Row>
                     </Form>
                 </Row>
@@ -160,24 +175,20 @@ function CarHistory() {
                                         <td>{row?.amount}</td>
                                         <td>{row?.money}</td>
                                         <td>{row?.note}</td>
-                                        <td>{moment(row?.createdAt).format('YYY-MM-DD, h:mm:ss a')}</td>
-                                        <td>{moment(row?.createdOut).format('YYY-MM-DD, h:mm:ss a')}</td>
+                                        <td>{moment(row?.createdAt).format('YY-MM-DD, h:mm:ss a')}</td>
+                                        <td>{moment(row?.createdOut).format('YY-MM-DD, h:mm:ss a')}</td>
                                     </ tr>
                                 ))}
                             </tbody>
                         </Table>
                         <br></br>
-                        <Pagination>
-                            <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-                            <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
-                            {pageNumbers.map(number => (
-                                <Pagination.Item key={number} active={number === currentPage} onClick={() => handlePageChange(number)}>
-                                    {number}
-                                </Pagination.Item>
-                            ))}
-                            <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} />
-                            <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
-                        </Pagination>
+
+
+                        <PaginationComponent
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            handlePageChange={handlePageChange}
+                        />
                     </Col>
                 </Row>
             </Container></>

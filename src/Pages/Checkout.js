@@ -9,6 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Navbarr from '../Components/Navbar';
 import { motion } from "framer-motion";
+import { fetchOrder, fetchReport, updateOrderStatus } from '../Services/api';
+import PaginationComponent from '../helper/PaginationComponent';
+import { showConfirmationAlert } from '../helper/SweetAlert';
 
 const Checkout = () => {
     const userId = localStorage.getItem('user_id').replace(/^"(.*)"$/, '$1');
@@ -29,61 +32,45 @@ const Checkout = () => {
         setCurrentPage(pageNumber);
     }
 
-
-
     useEffect(() => {
-        _fetchData()
-    }, []);
+        _fetchData();
+    }, [sign]);
 
     const _fetchData = async () => {
-        await axios.get(`https://soukphasone.onrender.com/orders?status=ONLINE&sign=${sign}`)
-            .then(response => {
-                setTableData(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    }
-    useEffect(() => {
-        _fetchData()
-    }, [sign])
-
-
-    const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
-    console.log("Token", token);
-    const headers = {
-        'Authorization': `STORE ${token}`
+        try {
+            const orders = await fetchOrder('ONLINE', sign);
+            setTableData(orders);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    const handleUpdateStatus = async (id) => {
-        await axios.put(`https://soukphasone.onrender.com/order/${id}`, { status: "OFFLINE" }, { headers })
-            .then(response => {
-                _fetchData()
-                _getCars()
-
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        // Perform search logic here and update tableData state
-    }
-    ///report 
     useEffect(() => {
-        _getCars()
+        _getCars();
     }, []);
 
     const _getCars = async () => {
-
-        await axios.get(`https://soukphasone.onrender.com/report/?status=ONLINE&userId=${userId}`)
-            .then(response => {
-                const data = response.data;
-                setDataCars(data);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        try {
+            const report = await fetchReport('ONLINE', userId);
+            setDataCars(report);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
+    const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
+    const headers = {
+        'Authorization': `STORE ${token}`
+    };
+    const handleUpdateStatus = async (id) => {
+        try {
+            await updateOrderStatus(id, 'OFFLINE', headers);
+            _fetchData();
+            _getCars();
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const h1 = { color: "white", marginTop: '15px' }
 
     return (
@@ -101,70 +88,49 @@ const Checkout = () => {
                     <Col ></Col>
                     <Col ></Col>
                     <Col xs={12} md={3}>
-                        <motion.div initial={{ x: "-100vw" }}
-                            animate={{ x: 0 }}
-                            transition={{ duration: 1, ease: "easeOut" }}>
-                            <Form >
-                                <Form.Group >
-                                    <InputGroup>
-                                        <InputGroup.Text id="basic-addon1" style={{ backgroundColor: "white" }}><FontAwesomeIcon icon={faMagnifyingGlass} /></InputGroup.Text>
-                                        <Form.Control type="text" placeholder='ຄົ້ນຫາທະບຽນ/ກົງເຕີ' onChange={(e) => setSign(e.target.value)} />
-                                    </InputGroup>
-                                </Form.Group>
-                            </Form>
-                        </motion.div>
+                        <Form >
+                            <Form.Group >
+                                <InputGroup>
+                                    <InputGroup.Text id="basic-addon1" style={{ backgroundColor: "white" }}><FontAwesomeIcon icon={faMagnifyingGlass} /></InputGroup.Text>
+                                    <Form.Control type="text" placeholder='ຄົ້ນຫາທະບຽນ/ກົງເຕີ' onChange={(e) => setSign(e.target.value)} />
+                                </InputGroup>
+                            </Form.Group>
+                        </Form>
                     </Col>
                 </Row>
                 <br></br>
                 <Row >
                     <Col xs={6} md={3} className="justify-content-center pb-4">
-                        <motion.div initial={{ x: "-100vw" }}
-                            animate={{ x: 0 }}
-                            transition={{ duration: 1, ease: "easeOut" }}>
-                            <Card >
-                                <Card.Body style={{ textAlign: "center" }}>
-                                    <Card.Title>ຈຳນວນລົດຖີບ :</Card.Title>
-                                    <Card.Text>{datacars.totalCycle}</Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </motion.div>
-                    </Col>
-
-                    <Col xs={6} md={3} className="justify-content-center">
-                        <motion.div initial={{ x: "-100vw" }}
-                            animate={{ x: 0 }}
-                            transition={{ duration: 1, ease: "easeOut" }}>
-                            <Card >
-                                <Card.Body style={{ textAlign: "center" }}>
-                                    <Card.Title>ຈຳນວນລົດຈັກ :</Card.Title>
-                                    <Card.Text>{datacars.totalBike}</Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </motion.div>
+                        <Card >
+                            <Card.Body style={{ textAlign: "center" }}>
+                                <Card.Title>ຈຳນວນລົດຖີບ :</Card.Title>
+                                <Card.Text>{datacars.totalCycle}</Card.Text>
+                            </Card.Body>
+                        </Card>
                     </Col>
                     <Col xs={6} md={3} className="justify-content-center">
-                        <motion.div initial={{ x: "-100vw" }}
-                            animate={{ x: 0 }}
-                            transition={{ duration: 1, ease: "easeOut" }}>
-                            <Card >
-                                <Card.Body style={{ textAlign: "center" }}>
-                                    <Card.Title> ຈຳນວນລົດໃຫຍ່ :</Card.Title>
-                                    <Card.Text>{datacars.totalCars}</Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </motion.div>
+                        <Card >
+                            <Card.Body style={{ textAlign: "center" }}>
+                                <Card.Title>ຈຳນວນລົດຈັກ :</Card.Title>
+                                <Card.Text>{datacars.totalBike}</Card.Text>
+                            </Card.Body>
+                        </Card>
                     </Col>
                     <Col xs={6} md={3} className="justify-content-center">
-                        <motion.div initial={{ x: "-100vw" }}
-                            animate={{ x: 0 }}
-                            transition={{ duration: 1, ease: "easeOut" }}>
-                            <Card >
-                                <Card.Body style={{ textAlign: "center" }}>
-                                    <Card.Title> ຈຳນວນທັງໝົດ :</Card.Title>
-                                    <Card.Text>{datacars.totalCars + datacars.totalCycle + datacars.totalBike}</Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </motion.div>
+                        <Card >
+                            <Card.Body style={{ textAlign: "center" }}>
+                                <Card.Title> ຈຳນວນລົດໃຫຍ່ :</Card.Title>
+                                <Card.Text>{datacars.totalCars}</Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col xs={6} md={3} className="justify-content-center">
+                        <Card >
+                            <Card.Body style={{ textAlign: "center" }}>
+                                <Card.Title> ຈຳນວນທັງໝົດ :</Card.Title>
+                                <Card.Text>{datacars.totalCars + datacars.totalCycle + datacars.totalBike}</Card.Text>
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
                 <br></br>
@@ -197,26 +163,7 @@ const Checkout = () => {
                                             <td>{item.money}</td>
                                             <td>{item.note}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <button onClick={(e) => {
-                                                    Swal.fire({
-                                                        title: 'Are you sure?',
-                                                        text: "You won't be able to revert this!",
-                                                        icon: 'warning',
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: '#3085d6',
-                                                        cancelButtonColor: '#d33',
-                                                        confirmButtonText: `Yes, delete it!`
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            handleUpdateStatus(item._id)
-                                                            Swal.fire(
-                                                                'Deleted!',
-                                                                'Your file has been deleted.',
-                                                                'success',
-                                                            )
-                                                        }
-                                                    })
-                                                }} style={{ backgroundColor: "#0B666A", color: "white", border: "none", borderRadius: "5px" }}>{item.status}</button>
+                                                <button onClick={() => showConfirmationAlert(() => handleUpdateStatus(item._id))} style={{ backgroundColor: "#0B666A", color: "white", border: "none", borderRadius: "5px" }}>{item.status}</button>
                                             </td>
                                         </tr>
                                     ))}
@@ -224,17 +171,11 @@ const Checkout = () => {
                             </tbody>
                         </Table>
                         <br></br>
-                        <Pagination>
-                            <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
-                            <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
-                            {pageNumbers.map(number => (
-                                <Pagination.Item key={number} active={number === currentPage} onClick={() => handlePageChange(number)}>
-                                    {number}
-                                </Pagination.Item>
-                            ))}
-                            <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} />
-                            <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
-                        </Pagination>
+                        <PaginationComponent
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            handlePageChange={handlePageChange}
+                        />
                     </Col>
                 </Row>
             </Container ></>

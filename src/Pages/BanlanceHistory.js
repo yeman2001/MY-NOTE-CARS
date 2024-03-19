@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbarr from "../Components/Navbar";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { fetchOrders } from "../Services/api";
 
 const BalanceHistoryForm = (props) => {
     const [data, setData] = useState([]);
@@ -24,11 +25,9 @@ const BalanceHistoryForm = (props) => {
 
     async function fetchData() {
         try {
-            const response = await axios.get(
-                `https://soukphasone.onrender.com/orders?dateFrom=${dateFrom}&dateTo=${dateTo}&userId=${userId}`
-            );
-            setData(response.data);
-            console.log(response.data);
+            const orders = await fetchOrders({ dateFrom, dateTo, userId }); // Use fetchOrders function
+            setData(orders);
+            console.log(orders);
         } catch (error) {
             console.error(error);
         }
@@ -37,7 +36,6 @@ const BalanceHistoryForm = (props) => {
     useEffect(() => {
         fetchData();
     }, [dateFrom, dateTo, userId]);
-
     const Cashtotal = () => {
         return data
             .filter((item) => item.money === "cash")
